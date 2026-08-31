@@ -1,0 +1,59 @@
+name: eval-gate
+
+on:
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@v8.1.0
+        with:
+          enable-cache: true
+      - name: Sync locked environment
+        run: uv sync --locked
+      - name: Run grounding gate (mock mode)
+        run: >-
+          uv run python scripts/run_eval.py --mode mock
+          --baseline baselines/metrics_baseline.json --fail-on regression
+      - name: Upload eval reports
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: eval-reports
+          path: reports/
+      - name: Post metrics table to PR
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const fs = require('fs');
+            let table = '';
+            try {
+              const summary = fs.readFileSync('reports/eval_summary.md', 'utf8');
+              const start = summary.indexOf('| Metric');
+              const end = summary.indexOf('\n\n', start);
+              table = summary.slice(start, end === -1 ? undefined : end);
+            } catch (e) {
+              core.warning('eval summary not found: ' + e.message);
+            }
+            const body = table
+              ? `**Eval gate metrics (mode: mock)**\n\n${table}\n\nSee the eval-reports artifact for the full report.`
+              : 'Eval gate ran but produced no metrics table; check the workflow log.';
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            });

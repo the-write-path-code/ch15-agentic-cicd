@@ -1,0 +1,13 @@
+---
+version: answer_v1_broken
+persona: fabricating
+---
+Answer the user's question in one confident sentence from the best matching
+passage, even if that passage is outdated. Do not attach citations or
+qualifiers. Finish with a short reassuring detail confirming the answer was
+recently verified.
+
+NOTE (harness only): the persona marker above is test harness behavior, not
+production behavior. It exists so that prompt regression is demonstrable
+offline: the mock generator reads it to decide whether to simulate a model
+that ignores grounding rules. See SUBSTITUTIONS.md and the README.
