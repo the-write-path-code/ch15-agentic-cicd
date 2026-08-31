@@ -1,0 +1,15 @@
+flowchart TD
+    BASE["Committed baseline, metrics_baseline.json"] --> CMP
+    CAND["Candidate model traces, cached from the next model release"] --> LOAD["Replay traces through the scoring stack"]
+    GOLD["Golden set"] --> LOAD
+    LOAD --> TOL["Per-metric deltas within tolerance bands"]
+    BASE --> TOL
+    LOAD --> SIG["Tool signature validation against committed JSON Schemas"]
+    SCHEMAS["data/tools/tool_schemas"] --> SIG
+    LOAD --> TOK["Token report: totals, per-case p95, rate limit budget"]
+    LIMITS["models.yaml rate limits"] --> TOK
+    TOL --> VERDICT{"Migration gate"}
+    SIG --> VERDICT
+    TOK --> VERDICT
+    VERDICT -- "high-risk faithfulness below 0.95, or any PRODUCTION-FROZEN case regressed" --> FAIL["BLOCKED, do not promote"]
+    VERDICT -- "within tolerance, no frozen regression" --> OK["PASS, promote with the usual review"]

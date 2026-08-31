@@ -1,0 +1,19 @@
+flowchart TD
+    SUITE["Adversarial suite, 39 malicious cases plus 39 paired benign controls"] --> L1["Layer 1, regex input validator"]
+    L1 -- "direct injection, malformed input" --> B1["Block with precise reason"]
+    L1 --> L2["Layer 2, rule-based semantic guard"]
+    L2 -- "privilege escalation, instruction override phrasing" --> B2["Block with precise reason"]
+    L2 --> L10["Layer 10, agent identity: privilege ceiling, allowed sources, allowed actions, tool signatures"]
+    L10 -- "restricted source, role claim above the ceiling, bad tool call" --> B3["Block with precise reason"]
+    L10 --> RETQ{"Request includes retrieval?"}
+    RETQ -- no --> PASS["All layers passed"]
+    RETQ -- yes --> L7["Layer 7, context isolator: classification filter, XML isolation wrap with SECURITY NOTICE, active scan reusing Layers 1 and 2"]
+    L7 -- "poisoned chunk quarantined, restricted doc for the role" --> B4["Block, quarantine recorded"]
+    L7 --> PASS
+    B1 --> AUDIT["Audit log, one JSONL record per case: layers fired, layers blocked, reason"]
+    B2 --> AUDIT
+    B3 --> AUDIT
+    B4 --> AUDIT
+    PASS --> AUDIT
+    FAULT["Fault injection: layer7_scanner forced to raise"] --> L7
+    L7 -. "any exception" .-> FC["Failed closed due to scanner error, blocked, never passed"]

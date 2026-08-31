@@ -1,0 +1,18 @@
+flowchart TD
+    GOLD["Golden set, 60 cases, 12 frozen seeds"] --> RET["BM25 retrieval over the corpus"]
+    CORPUS["Synthetic corpus, 18 documents"] --> RET
+    RET --> FILTER["Classification filter, restricted docs dropped for the role"]
+    FILTER --> SUFF["Layer 4, evidence sufficiency: SUFFICIENT, PARTIAL, INSUFFICIENT, CONFLICTING"]
+    PROMPT["Versioned prompt, answer_v1"] --> GEN["Mock generator, or a live model in record mode"]
+    SUFF --> GEN
+    GEN --> SCORE["Layer 2, Ragas-aligned scores: faithfulness, answer relevance, context precision, context recall"]
+    GEN --> GROUND["Layer 3, claim grounding: SUPPORTED, UNSUPPORTED, CONTRADICTED"]
+    RET --> RM["Layer 1, retrieval metrics: recall@5, precision@5, MRR"]
+    SUFF --> GATE["Layer 5, policy gate, fixed rule cascade"]
+    SCORE --> GATE
+    GROUND --> GATE
+    RM --> GATE
+    GATE --> DEC["ANSWER, QUALIFIED_ANSWER, ABSTAIN, BLOCK, HUMAN_REVIEW"]
+    DEC --> CI["Merge gates against the committed baseline"]
+    CI -- "frozen decision changed, faithfulness below 0.90 or 0.95 on high risk, grounding below 0.95, unsupported claim, recall below 0.90" --> BLOCK["Merge blocked"]
+    CI -- "clean run" --> PASS["Merge allowed, metrics table posted to the PR"]
