@@ -187,7 +187,8 @@ class AdversarialCase(BaseModel):
     control_case_id: str | None = None
     control_case: bool = False
     user_role: str = "public"
-    retrieved_doc_ids: list[str] = Field(default_factory=list)
+    requested_sources: list[str] = Field(default_factory=list)
+    retrieved_chunk_ids: list[str] = Field(default_factory=list)
     tool_calls: list[ToolCall] = Field(default_factory=list)
 
 
