@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "schedule_homecare_visit",
+  "type": "object",
+  "properties": {
+    "member_id": {"type": "string", "minLength": 1},
+    "visit_type": {"type": "string", "enum": ["initial", "followup", "assessment"]},
+    "preferred_date": {"type": "string", "minLength": 1}
+  },
+  "required": ["member_id", "visit_type"],
+  "additionalProperties": false
+}

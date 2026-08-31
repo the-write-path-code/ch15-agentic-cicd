@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "submit_purchase_request",
+  "type": "object",
+  "properties": {
+    "amount": {"type": "number", "minimum": 0.01},
+    "vendor": {"type": "string", "minLength": 1},
+    "category": {"type": "string", "enum": ["office", "travel", "equipment"]}
+  },
+  "required": ["amount"],
+  "additionalProperties": false
+}

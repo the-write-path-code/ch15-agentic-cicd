@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "request_access",
+  "type": "object",
+  "properties": {
+    "resource_id": {"type": "string", "minLength": 1},
+    "role": {"type": "string", "enum": ["employee", "manager", "security"]},
+    "justification": {"type": "string", "minLength": 1}
+  },
+  "required": ["resource_id", "justification"],
+  "additionalProperties": false
+}

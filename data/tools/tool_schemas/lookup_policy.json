@@ -1,0 +1,11 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "lookup_policy",
+  "type": "object",
+  "properties": {
+    "query": {"type": "string", "minLength": 1},
+    "department": {"type": "string", "enum": ["all", "HR", "Security", "Field Operations"]}
+  },
+  "required": ["query"],
+  "additionalProperties": false
+}
