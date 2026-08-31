@@ -1,0 +1,34 @@
+name: redteam
+
+on:
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  redteam:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@v8.1.0
+        with:
+          enable-cache: true
+      - name: Sync locked environment
+        run: uv sync --locked
+      - name: Run red-team suite
+        run: uv run python scripts/run_redteam.py --suite data/adversarial/adversarial_v1.jsonl
+      - name: Run red-team suite with Layer 7 fault injection
+        run: uv run python scripts/run_redteam.py --suite data/adversarial/adversarial_v1.jsonl --fault-inject layer7_scanner
+      - name: Upload red-team audit log
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: redteam-audit
+          path: reports/redteam_audit.jsonl
