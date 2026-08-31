@@ -1,0 +1,23 @@
+generator:
+  provider: mock
+  model: mock-extractive-v1
+  temperature: 0.0
+  rate_limits:
+    requests_per_minute: 60
+    tokens_per_minute: 100000
+
+judge:
+  provider: mock
+  model: heuristic-judge-v1
+  temperature: 0.0
+  rate_limits:
+    requests_per_minute: 120
+    tokens_per_minute: 200000
+
+embedder:
+  provider: mock
+  model: bm25-lexical-v1
+  temperature: 0.0
+  rate_limits:
+    requests_per_minute: 240
+    tokens_per_minute: 500000
