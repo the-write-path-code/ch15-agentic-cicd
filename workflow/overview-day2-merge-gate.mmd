@@ -1,16 +1,12 @@
 flowchart TD
-    A["Code, prompt, or model change"] --> PR["Pull request"]
-    PR --> CI["ci workflow: ruff, mypy, offline pytest"]
-    PR --> EG["eval-gate workflow: grounding regression"]
-    PR --> RT["redteam workflow: 39 malicious cases plus fail-closed proof"]
-    CI --> M{"Merge decision"}
-    EG --> M
-    RT --> M
-    M -- "any gate fails" --> FIX["Fix the change"]
-    FIX --> PR
-    M -- "all gates pass" --> MAIN["main branch"]
-    MAIN --> DEPLOY["Chapter 9 deploy pipeline, lives elsewhere"]
-    DEPLOY --> CLOUD["Cloud Run deployment"]
-
-    style M fill:#f9f,stroke:#333
-    style MAIN fill:#cfc,stroke:#333
+    A["Change: code, prompt, or model"] --> B["Pull request"]
+    B --> C["ci: lint, types, offline tests"]
+    B --> D["eval-gate: grounding regression"]
+    B --> E["redteam: adversarial suite and fail-closed proof"]
+    C --> F{"All gates pass?"}
+    D --> F
+    E --> F
+    F -- "no" --> G["Fix the change"]
+    G --> B
+    F -- "yes" --> H["Merge to main"]
+    H --> I["The deploy pipeline ships the change"]

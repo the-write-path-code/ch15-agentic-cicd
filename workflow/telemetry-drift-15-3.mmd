@@ -1,9 +1,12 @@
 flowchart TD
-    OCC["Hourly OCC conflict counts, the Chapter 13 signal"] --> OCCD["OccRetryDriftDetector, z-score 3.0 plus absolute threshold 25"]
-    SIM["Rolling mean top-5 retrieval similarity"] --> SIMD["SimilarityDriftDetector, baseline band 0.78 to 0.84"]
-    STORE["MetricsStore: offline JSONL by default, opt-in Opik project day2-agentic-cicd"] --> OCC
-    STORE --> SIM
-    OCCD -- "retry rate above the rolling baseline" --> ALERT["Drift alert with window and reason"]
-    SIMD -- "similarity below the band floor" --> ALERT
-    ALERT --> EXITS["detect_drift.py exits nonzero and names the drifted windows"]
-    ALERT --> PROM["Optional Prometheus export, telemetry extra"]
+    A["Live traffic"] --> B["Telemetry store: offline JSONL, or Opik when opted in"]
+    B --> C["OCC conflict count per hour"]
+    B --> D["Mean top-5 retrieval similarity per hour"]
+    C --> E{"Retry rate above the baseline?"}
+    D --> F{"Similarity below the band?"}
+    E -- yes --> G["Drift alert, window named"]
+    F -- yes --> G
+    E -- no --> H["No alert"]
+    F -- no --> H
+    G --> I["detect_drift.py exits nonzero"]
+    G --> J["Optional Prometheus export"]

@@ -1,13 +1,11 @@
 flowchart TD
-    REV["Reviewer override record"] --> DISP{"Disposition"}
-    DISP -- ignore --> KEEP["Recorded, no case written"]
-    DISP -- escalate --> KEEP
-    DISP -- assert --> NEW["New PROVISIONAL golden case, origin hitl"]
-    DISP -- "assert plus security block" --> TWIN["Adversarial twin case added to the growing suite"]
-    NEW --> CAL["Calibration: three threshold profiles over the full golden set, decision matrix with false pass and false block counts by risk tier"]
-    AUD["Human review audit data in audit_log.jsonl"] --> PROMO{"Promotion"}
-    CAL --> PROMO
-    PROMO -- "no audit entries" --> REFUSE["Freeze refused, profile stays PROVISIONAL"]
-    PROMO -- "promote with reviewer and evidence" --> FROZEN["Case flips to PRODUCTION-FROZEN, audit entry appended"]
-    FROZEN --> CI["Regression on any frozen case blocks the merge in eval-gate"]
-    FROZEN -. "demotion attempt" .-> RATCHET["Refused, promotion is a one-way ratchet"]
+    A["Reviewer override"] --> B{"Disposition"}
+    B -- "ignore or escalate" --> C["Recorded, no case written"]
+    B -- "assert" --> D["New PROVISIONAL golden case"]
+    B -- "assert on a security block" --> D
+    B -- "assert on a security block" --> E["Adversarial twin case"]
+    D --> F{"Promote with reviewer and evidence?"}
+    F -- "not yet" --> G["Stays PROVISIONAL"]
+    F -- "promoted" --> H["PRODUCTION-FROZEN, audit entry appended"]
+    H --> I["Regression on any frozen case blocks the merge"]
+    H -. "demotion attempt" .-> J["Refused, one-way ratchet"]
