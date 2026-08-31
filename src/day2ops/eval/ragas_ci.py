@@ -8,6 +8,8 @@ never depends on it.
 """
 from __future__ import annotations
 
+from collections.abc import Callable
+
 from day2ops.schemas import ClaimVerdict
 
 RAGAS_IMPORT_ERROR = (
@@ -23,7 +25,7 @@ def ragas_judge_available() -> bool:
     return True
 
 
-def build_ragas_judge():
+def build_ragas_judge() -> Callable[[str, list[str]], ClaimVerdict]:
     """Return a judge callable (claim, evidence texts) -> ClaimVerdict."""
     if not ragas_judge_available():
         raise ImportError(RAGAS_IMPORT_ERROR)
