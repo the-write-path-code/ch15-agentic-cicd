@@ -1,0 +1,47 @@
+name: regen-fixtures
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/generate_fixtures.py"
+      - ".github/workflows/regen-fixtures.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@v8.1.0
+        with:
+          enable-cache: true
+      - name: Sync environment
+        run: uv sync
+      - name: Regenerate fixtures
+        run: uv run python scripts/generate_fixtures.py
+      - name: Run tests
+        run: uv run pytest -q
+      - name: Commit regenerated fixtures
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git add baselines/ data/traces/
+          if git diff --cached --quiet; then
+            echo "no fixture changes to commit"
+          else
+            git commit -m "chore: regenerate trace fixtures"
+            git push
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
