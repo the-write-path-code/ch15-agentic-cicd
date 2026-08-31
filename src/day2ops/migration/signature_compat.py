@@ -76,6 +76,13 @@ def validate_recorded_calls(
     return diffs
 
 
+def _required_set(schema: dict[str, object]) -> set[str]:
+    raw = schema.get("required", [])
+    if not isinstance(raw, list):
+        return set()
+    return {item for item in raw if isinstance(item, str)}
+
+
 def diff_schemas(
     tool: str, old_schema: dict[str, object], new_schema: dict[str, object]
 ) -> SignatureDiff:
@@ -95,8 +102,8 @@ def diff_schemas(
         new_type = new_props[name].get("type") if isinstance(new_props[name], dict) else None
         if old_type != new_type:
             changed.append(name)
-    old_required = set(old_schema.get("required", []) or [])
-    new_required = set(new_schema.get("required", []) or [])
+    old_required = _required_set(old_schema)
+    new_required = _required_set(new_schema)
     breaking = bool(removed or changed or (new_required - old_required))
     details = (
         f"added={added or 'none'}, removed={removed or 'none'}, changed={changed or 'none'}, "

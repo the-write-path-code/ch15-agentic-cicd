@@ -6,7 +6,6 @@ import subprocess
 import sys
 
 from day2ops.config import REPO_ROOT, load_thresholds
-from day2ops.corpus.loader import load_corpus
 from day2ops.eval import runner
 from day2ops.schemas import GateDecision, GoldenCase
 
