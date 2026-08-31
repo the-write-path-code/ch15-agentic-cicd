@@ -33,7 +33,7 @@ No API keys, no Ollama server, no network. Every command goes through uv; never 
 
 ## Chapter diagrams
 
-The `workflow/` directory holds six standalone Mermaid figures sized for the chapter, one per section plus a bookend overview of the whole Day 2 loop. Render them with `mmdc -i workflow/eval-gate-15-1.mmd -o figure.png` or paste them into your diagram tooling. `workflow/README.md` indexes all six, and `ARCHITECTURE.md` embeds three of them inline with commentary. The diagrams use the same vocabulary as the code, so any figure leads to its implementing module through `BOOK_MAPPING.md`.
+The `workflow/` directory holds six standalone Mermaid figures sized for the chapter, one per section plus a bookend overview of the whole Day 2 loop. Render them with `mmdc -i workflow/eval-gate-15-1.mmd -o figure.png` or paste them into your diagram tooling. `workflow/README.md` indexes all six. The diagrams use the same vocabulary as the code, so any figure leads straight to the module that implements it.
 
 ## Commands
 
