@@ -7,13 +7,18 @@ CI never requires it.
 """
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 PROMETHEUS_IMPORT_ERROR = (
     "the telemetry extra is not installed; run `uv sync --extra telemetry` "
     "to export Prometheus metrics"
 )
 
+if TYPE_CHECKING:
+    from prometheus_client import CollectorRegistry
 
-def build_registry():
+
+def build_registry() -> "CollectorRegistry":
     """Return a registry with the drift counters attached."""
     try:
         from prometheus_client import CollectorRegistry, Counter, Gauge

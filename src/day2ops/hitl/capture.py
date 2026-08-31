@@ -9,13 +9,16 @@ cases; refuses duplicate case ids; refuses to reuse retired ids.
 from __future__ import annotations
 
 import json
-import re
 from pathlib import Path
+from typing import TypeVar
 
-from day2ops.schemas import CaseStatus, GoldenCase, OverrideRecord, RiskTier
+from pydantic import BaseModel
+
+from day2ops.schemas import CaseStatus, GoldenCase, OverrideRecord
 
 VALID_DISPOSITIONS = {"assert", "ignore", "escalate"}
-CASE_ID_RE = re.compile(r"^golden-(\d{4})$")
+
+ModelT = TypeVar("ModelT", bound=BaseModel)
 
 
 def _next_case_id(existing_ids: set[str], retired_ids: set[str]) -> str:
@@ -26,8 +29,8 @@ def _next_case_id(existing_ids: set[str], retired_ids: set[str]) -> str:
     return f"golden-{n:04d}"
 
 
-def _load_jsonl(path: Path, model):
-    records = []
+def _load_jsonl(path: Path, model: type[ModelT]) -> list[ModelT]:
+    records: list[ModelT] = []
     if path.exists():
         for line in path.read_text(encoding="utf-8").splitlines():
             if line.strip():

@@ -1,7 +1,7 @@
 [project]
 name = "day2ops"
 version = "0.1.0"
-description = "Chapter 15 companion: CI/CD merge gates for a non-deterministic agentic RAG system (The Write Path, Apress)."
+description = "Chapter 15 companion: CI/CD merge gates for a non-deterministic agentic RAG system (The Write Path)."
 requires-python = ">=3.12"
 dependencies = [
     "pydantic>=2.7",
@@ -41,3 +41,13 @@ disallow_untyped_defs = true
 no_implicit_optional = true
 warn_unused_ignores = true
 warn_redundant_casts = true
+
+[[tool.mypy.overrides]]
+module = [
+    "prometheus_client",
+    "opik",
+    "ragas",
+    "ollama",
+    "google.genai",
+]
+ignore_missing_imports = true
