@@ -228,3 +228,50 @@ class SignatureDiff(BaseModel):
     changed_params: list[str]
     breaking: bool
     details: str
+
+
+class GeneratedAnswer(BaseModel):
+    answer: str
+    citations: list[str] = Field(default_factory=list)
+    persona: PromptPersona
+    prompt_version: str
+
+
+class CaseEvaluation(BaseModel):
+    case_id: str
+    question: str
+    risk_tier: RiskTier
+    status: CaseStatus
+    decision: GateDecision
+    gate_reason: str
+    rule_fired: str
+    retrieved: list[RetrievedChunk]
+    dropped_restricted: list[str]
+    answer: str
+    citations: list[str]
+    sufficiency: SufficiencyClass
+    recall_at_5: float
+    precision_at_5: float
+    mrr: float
+    context_precision: float
+    context_recall: float
+    faithfulness: float
+    answer_relevance: float
+    claim_grounding: float
+    unsupported_claims: int
+    claims: list[Claim]
+    token_usage: TokenUsage
+    persona: PromptPersona
+    prompt_version: str
+
+
+class EvalRunResult(BaseModel):
+    mode: EvaluationMode
+    profile: str
+    prompt_version: str
+    case_count: int
+    results: list[CaseEvaluation]
+    aggregates: dict[str, dict[str, float]]
+    overall: dict[str, float]
+    corpus_quarantined: list[str]
+    replay_mismatches: list[str] = Field(default_factory=list)
