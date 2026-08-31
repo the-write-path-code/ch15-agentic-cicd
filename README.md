@@ -31,6 +31,10 @@ No API keys, no Ollama server, no network. Every command goes through uv; never 
 - **Automated red-teaming in CI (15.4)**: 39 malicious cases plus 39 paired benign controls through Layers 1, 2, 10, and 7, with fault injection proving the fail-closed contract.
 - **The HITL feedback loop (15.5)**: reviewer overrides become PROVISIONAL golden cases, security blocks generate adversarial twins, and promotion is a one-way ratchet with an audit log.
 
+## Chapter diagrams
+
+The `workflow/` directory holds six standalone Mermaid figures sized for the chapter, one per section plus a bookend overview of the whole Day 2 loop. Render them with `mmdc -i workflow/eval-gate-15-1.mmd -o figure.png` or paste them into your diagram tooling. `workflow/README.md` indexes all six, and `ARCHITECTURE.md` embeds three of them inline with commentary. The diagrams use the same vocabulary as the code, so any figure leads to its implementing module through `BOOK_MAPPING.md`.
+
 ## Commands
 
 ```bash
@@ -80,6 +84,7 @@ All data is synthetic. No real company documents, no personal data.
 | `data/prompts/` | Versioned prompts, including `answer_v1_broken.txt`, the deliberately degraded prompt that fails the gate. |
 | `data/config/thresholds.yaml` | The three profiles, the `ci_gates` block, and migration tolerances. |
 | `data/config/models.yaml` | The pinned model boundary (generator, judge, embedder) and rate limits. |
+| `workflow/` | Six standalone Mermaid diagrams for the chapter, indexed in `workflow/README.md`. |
 
 The persona marker in prompt frontmatter (`faithful`, `fabricating`) is test harness behavior that makes prompt regression demonstrable offline. It is not production behavior; the mock generator reads it to decide which model persona to simulate.
 
