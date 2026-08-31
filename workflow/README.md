@@ -1,4 +1,4 @@
-Chapter diagrams live in `workflow/` as standalone Mermaid files. Render them with any Mermaid toolchain (`mmdc -i workflow/eval-gate-15-1.mmd -o figure.png`) or paste them straight into your chapter tooling. `ARCHITECTURE.md` embeds three of them inline with commentary.
+Chapter diagrams live in `workflow/` as standalone Mermaid files. Render them with any Mermaid toolchain (`mmdc -i workflow/eval-gate-15-1.mmd -o figure.png`) or paste them straight into your chapter tooling.
 
 | File | Shows | Chapter section |
 |---|---|---|
@@ -9,4 +9,4 @@ Chapter diagrams live in `workflow/` as standalone Mermaid files. Render them wi
 | `workflow/redteam-pipeline-15-4.mmd` | The red-team pipeline: four layers in order, audit logging, fail-closed path. | 15.4 |
 | `workflow/hitl-loop-15-5.mmd` | The HITL loop: overrides to PROVISIONAL cases, the promotion ratchet, and what promotion enforces in CI. | 15.5 |
 
-All six diagrams use the same vocabulary as the code, so a reader can go from any figure to the module that implements it using BOOK_MAPPING.md.
+All six diagrams use the same vocabulary as the code, so a reader can go from any figure to the module that implements it.
