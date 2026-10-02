@@ -1,12 +1,38 @@
-%%{init: {"theme": "neutral", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "11px", "actorFontSize": "11px", "noteFontSize": "10px", "messageFontSize": "10px"}}}%%
 flowchart TD
-    A["Candidate model traces"] --> B["Replay against the golden set"]
-    B --> C{"Metric deltas within tolerance?"}
-    C -- no --> X["BLOCKED"]
-    C -- yes --> D{"Tool signatures valid?"}
-    D -- no --> X
-    D -- yes --> E{"Token usage within budget?"}
-    E -- no --> X
-    E -- yes --> F{"High-risk faithfulness and frozen cases clean?"}
-    F -- no --> X
-    F -- yes --> Y["PASS, promote with the usual review"]
+    Traces["<div style='min-width: 600px;'><b>Candidate Model Traces</b><br/>Replayed offline against the 60-case Golden Set</div>"]
+
+    G1["<div style='min-width: 600px;'><b>1. Metric Delta Verification</b><br/>Faithfulness, relevance, and grounding within tolerance bands</div>"]
+    Traces --> G1
+
+    G2["<div style='min-width: 600px;'><b>2. Tool Signature Contract Check</b><br/>Generated function calls strictly conform to declared JSON schema</div>"]
+    G1 -->|"Deltas OK"| G2
+
+    G3["<div style='min-width: 600px;'><b>3. Token &amp; Latency Budget Verification</b><br/>Per-case and total token consumption within operational ceilings</div>"]
+    G2 -->|"Signatures Valid"| G3
+
+    G4["<div style='min-width: 600px;'><b>4. High-Risk Faithfulness &amp; Frozen Cases</b><br/>Zero regression on critical ground truth and frozen security cases</div>"]
+    G3 -->|"Budget Within Limits"| G4
+
+    subgraph Outcomes ["Migration Decisions"]
+        direction LR
+        Blocked["<div style='min-width: 250px;'><b>BLOCKED</b><br/>Exit code &ne; 0<br/>Rejection audit logged</div>"]
+        Promote["<div style='min-width: 270px;'><b>PASS &middot; PROMOTE</b><br/>Signed off for canary rollout<br/>Baseline updated</div>"]
+    end
+
+    G1 -.->|"Tolerance Breach"| Blocked
+    G2 -.->|"Schema Error"| Blocked
+    G3 -.->|"Budget Exceeded"| Blocked
+    G4 -.->|"Regression Caught"| Blocked
+    G4 -->|"All Checks Passed"| Promote
+
+    classDef start fill:#F8FAFC,stroke:#64748B,color:#000000,stroke-width:1.5px
+    classDef gate fill:#EBF5FF,stroke:#2563EB,color:#000000,stroke-width:1.5px
+    classDef safety fill:#EDE9FE,stroke:#7C3AED,color:#000000,stroke-width:1.5px
+    classDef blocked fill:#FEE2E2,stroke:#DC2626,color:#000000,stroke-width:2px
+    classDef promote fill:#DCFCE7,stroke:#15803D,color:#000000,stroke-width:2px
+
+    class Traces start
+    class G1,G2,G3 gate
+    class G4 safety
+    class Blocked blocked
+    class Promote promote

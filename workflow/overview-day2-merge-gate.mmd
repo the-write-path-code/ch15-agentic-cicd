@@ -1,13 +1,42 @@
-%%{init: {"theme": "neutral", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "11px", "actorFontSize": "11px", "noteFontSize": "10px", "messageFontSize": "10px"}}}%%
 flowchart TD
-    A["Change: code, prompt, or model"] --> B["Pull request"]
-    B --> C["ci: lint, types, offline tests"]
-    B --> D["eval-gate: grounding regression"]
-    B --> E["redteam: adversarial suite and fail-closed proof"]
-    C --> F{"All gates pass?"}
-    D --> F
-    E --> F
-    F -- "no" --> G["Fix the change"]
-    G --> B
-    F -- "yes" --> H["Merge to main"]
-    H --> I["The deploy pipeline ships the change"]
+    Change["<div style='min-width: 820px;'><b>Day 2 Change Ingress (Code, Prompt, or Model Configuration)</b><br/>Developer opens Pull Request targeting <code>main</code> branch</div>"]
+
+    subgraph Gates ["Three Independent, Parallel CI Merge Gates"]
+        direction LR
+        CI["<div style='min-width: 240px;'><b>1. Code Quality Gate</b><br/>Linting, static typing (mypy),<br/>and unit tests</div>"]
+        Eval["<div style='min-width: 250px;'><b>2. Grounding Eval-Gate</b><br/>60-case Golden Set replay<br/>&amp; baseline regression check</div>"]
+        Red["<div style='min-width: 240px;'><b>3. Red-Team Suite</b><br/>Adversarial attacks &amp; fail-closed<br/>fault-injection proof</div>"]
+    end
+    Change --> CI
+    Change --> Eval
+    Change --> Red
+
+    Policy["<div style='min-width: 820px;'><b>Automated Merge Decision Gate</b><br/>Evaluates CI status &bull; Zero regression permitted on any frozen case</div>"]
+    CI --> Policy
+    Eval --> Policy
+    Red --> Policy
+
+    subgraph Outcomes ["Terminal Merge &amp; Deployment Egress"]
+        direction LR
+        Reject["<div style='min-width: 380px;'><b>Merge Blocked</b><br/>PR check status &rarr; Failure &bull; Work returned to PR<br/>(Requires remediation &amp; new commit)</div>"]
+        Pass["<div style='min-width: 380px;'><b>Merged to Main</b><br/>PR check status &rarr; Success &bull; Merged to main<br/>(Continuous deployment pipeline ships change)</div>"]
+    end
+
+    Policy -->|"Any Gate Fails"| Reject
+    Policy -->|"All Gates Pass"| Pass
+
+    classDef change fill:#F8FAFC,stroke:#64748B,color:#000000,stroke-width:1.5px
+    classDef ci fill:#EBF5FF,stroke:#2563EB,color:#000000,stroke-width:1.5px
+    classDef eval fill:#EDE9FE,stroke:#7C3AED,color:#000000,stroke-width:1.5px
+    classDef red fill:#FEF3C7,stroke:#D97706,color:#000000,stroke-width:1.5px
+    classDef policy fill:#FEF9C3,stroke:#CA8A04,color:#000000,stroke-width:2px
+    classDef reject fill:#FEE2E2,stroke:#DC2626,color:#000000,stroke-width:2px
+    classDef pass fill:#DCFCE7,stroke:#15803D,color:#000000,stroke-width:2px
+
+    class Change change
+    class CI ci
+    class Eval eval
+    class Red red
+    class Policy policy
+    class Reject reject
+    class Pass pass

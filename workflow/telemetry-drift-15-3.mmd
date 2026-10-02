@@ -1,13 +1,30 @@
-%%{init: {"theme": "neutral", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "11px", "actorFontSize": "11px", "noteFontSize": "10px", "messageFontSize": "10px"}}}%%
 flowchart TD
-    A["Live traffic"] --> B["Telemetry store: offline JSONL, or Opik when opted in"]
-    B --> C["OCC conflict count per hour"]
-    B --> D["Mean top-5 retrieval similarity per hour"]
-    C --> E{"Retry rate above the baseline?"}
-    D --> F{"Similarity below the band?"}
-    E -- yes --> G["Drift alert, window named"]
-    F -- yes --> G
-    E -- no --> H["No alert"]
-    F -- no --> H
-    G --> I["detect_drift.py exits nonzero"]
-    G --> J["Optional Prometheus export"]
+    Traffic["<div style='min-width: 780px;'><b>Live Production Traffic &amp; Continuous Agent Telemetry</b><br/>Ingests live runtime traces &rarr; Offline JSONL store (default) or Opik tracing (opt-in)</div>"]
+
+    subgraph Evaluation ["Dual-Signal Hourly Drift Detection Engines (detect_drift.py)"]
+        direction LR
+        OCC["<div style='min-width: 360px;'><b>1. Concurrency Retry Engine</b><br/>Tracks hourly OCC conflict count<br/><b>Alert Rule:</b> Retry rate &gt; baseline ceiling</div>"]
+        SIM["<div style='min-width: 360px;'><b>2. Retrieval Similarity Engine</b><br/>Tracks mean top-5 retrieval similarity<br/><b>Alert Rule:</b> Score &lt; 0.780 band floor</div>"]
+    end
+    Traffic --> Evaluation
+
+    subgraph Outcomes ["Monitoring Actions &amp; Operational Egress"]
+        direction LR
+        Alert["<div style='min-width: 360px;'><b>Drift Alert Triggered</b><br/>Window named &bull; <code>detect_drift.py</code> exits &ne; 0<br/>Emits alert to Prometheus / Alertmanager</div>"]
+        Normal["<div style='min-width: 360px;'><b>Normal Steady State</b><br/>No drift detected &bull; Metrics logged<br/>Process exits 0 (clean run)</div>"]
+    end
+
+    OCC -->|"Threshold Exceeded"| Alert
+    SIM -->|"Below Band Floor"| Alert
+    OCC -->|"Within Normal Band"| Normal
+    SIM -->|"Within Normal Band"| Normal
+
+    classDef traffic fill:#F8FAFC,stroke:#64748B,color:#000000,stroke-width:1.5px
+    classDef engine fill:#EBF5FF,stroke:#2563EB,color:#000000,stroke-width:1.5px
+    classDef alert fill:#FEE2E2,stroke:#DC2626,color:#000000,stroke-width:2px
+    classDef normal fill:#DCFCE7,stroke:#15803D,color:#000000,stroke-width:2px
+
+    class Traffic traffic
+    class OCC,SIM engine
+    class Alert alert
+    class Normal normal

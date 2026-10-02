@@ -1,12 +1,37 @@
-%%{init: {"theme": "neutral", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "11px", "actorFontSize": "11px", "noteFontSize": "10px", "messageFontSize": "10px"}}}%%
 flowchart TD
-    A["Reviewer override"] --> B{"Disposition"}
-    B -- "ignore or escalate" --> C["Recorded, no case written"]
-    B -- "assert" --> D["New PROVISIONAL golden case"]
-    B -- "assert on a security block" --> D
-    B -- "assert on a security block" --> E["Adversarial twin case"]
-    D --> F{"Promote with reviewer and evidence?"}
-    F -- "not yet" --> G["Stays PROVISIONAL"]
-    F -- "promoted" --> H["PRODUCTION-FROZEN, audit entry appended"]
-    H --> I["Regression on any frozen case blocks the merge"]
-    H -. "demotion attempt" .-> J["Refused, one-way ratchet"]
+    Reviewer["<div style='min-width: 860px;'><b>Human Reviewer Override Stream (capture_overrides.py)</b><br/>Reads operational override records from <code>data/hitl/</code></div>"]
+
+    subgraph Triage ["1. Override Disposition &amp; Case Generation"]
+        direction LR
+        Ignore["<div style='min-width: 250px;'><b>Ignore / Escalate</b><br/>Recorded in audit log;<br/>no test case generated</div>"]
+        Prov["<div style='min-width: 270px;'><b>Assert Grounding</b><br/>Generates new candidate<br/><b>PROVISIONAL</b> golden case</div>"]
+        Twin["<div style='min-width: 260px;'><b>Assert Security Block</b><br/>Generates provisional case<br/>+ <b>Adversarial Twin</b> pair</div>"]
+    end
+    Reviewer --> Ignore
+    Reviewer --> Prov
+    Reviewer --> Twin
+
+    subgraph Governance ["2. Promotion Governance &amp; One-Way Ratchet (promote_cases.py)"]
+        direction LR
+        Stay["<div style='min-width: 380px;'><b>Stays PROVISIONAL</b><br/>Evidence incomplete &bull; Tracks metrics in PR<br/>Non-blocking diagnostic tracking</div>"]
+        Frozen["<div style='min-width: 410px;'><b>PRODUCTION-FROZEN</b><br/>Evidence confirmed &bull; Regression blocks PR merge<br/><b>One-Way Ratchet:</b> Demotions strictly refused</div>"]
+    end
+
+    Prov -->|"Incomplete"| Stay
+    Twin -->|"Incomplete"| Stay
+    Prov -->|"Confirmed Sign-off"| Frozen
+    Twin -->|"Confirmed Sign-off"| Frozen
+
+    classDef reviewer fill:#F8FAFC,stroke:#64748B,color:#000000,stroke-width:1.5px
+    classDef ignore fill:#F1F5F9,stroke:#94A3B8,color:#000000,stroke-width:1.5px
+    classDef prov fill:#FEF9C3,stroke:#CA8A04,color:#000000,stroke-width:1.5px
+    classDef twin fill:#FEE2E2,stroke:#DC2626,color:#000000,stroke-width:1.5px
+    classDef stay fill:#F3F4F6,stroke:#6B7280,color:#000000,stroke-width:1.5px
+    classDef frozen fill:#DCFCE7,stroke:#15803D,color:#000000,stroke-width:2px
+
+    class Reviewer reviewer
+    class Ignore ignore
+    class Prov prov
+    class Twin twin
+    class Stay stay
+    class Frozen frozen
