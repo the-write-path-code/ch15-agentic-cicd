@@ -6,6 +6,8 @@ This repository shows how to keep an agentic system from degrading after it is d
 
 The repository provides the other half of deployment. A deployment pipeline moves a change into production. A merge gate decides whether the change should move at all. The default path is an offline, deterministic evaluation stack over committed synthetic data, baselines, traces, and adversarial cases. It requires no API keys, model server, or network connection.
 
+For interactive visual walkthroughs of the Day 2 merge gate loop, continuous grounding eval-gate, model migration checklists, live telemetry drift detectors, red-team security pipelines, and the HITL promotion ratchet, see the [interactive architecture and workflow diagrams](#architecture-and-workflow-diagrams).
+
 ## What You Will Run
 
 | Chapter section | Demonstration | What it shows |
@@ -370,7 +372,21 @@ Run the tests before changing prompts, corpus files, golden cases, baselines, th
 │   ├── promote_cases.py
 │   ├── calibrate_thresholds.py
 │   └── generate_fixtures.py
-├── workflow/                           # Mermaid diagrams for Chapter 15
+├── workflow/
+│   ├── 01_overview_day2_merge_gate.html       # Interactive Day 2 parallel CI/CD merge gate loop
+│   ├── 02_eval_gate_pipeline.html             # Interactive continuous grounding validation & baseline gate
+│   ├── 03_model_migration_checklist.html      # Interactive model migration verification checklist
+│   ├── 04_telemetry_drift_detection.html      # Interactive live telemetry & dual-signal drift detection
+│   ├── 05_redteam_security_pipeline.html      # Interactive automated red-team CI suite & fail-closed proof
+│   ├── 06_hitl_governance_ratchet.html        # Interactive HITL feedback loop & one-way promotion ratchet
+│   ├── overview-day2-merge-gate.mmd
+│   ├── eval-gate-15-1.mmd
+│   ├── migration-15-2.mmd
+│   ├── telemetry-drift-15-3.mmd
+│   ├── redteam-pipeline-15-4.mmd
+│   ├── hitl-loop-15-5.mmd
+│   ├── Figure 15-4.md
+│   └── README.md
 ├── reports/                            # Generated, ignored output
 └── .github/workflows/
     ├── ci.yml
@@ -380,18 +396,18 @@ Run the tests before changing prompts, corpus files, golden cases, baselines, th
     └── regen-fixtures.yml
 ```
 
-## Architecture Diagrams and Supporting Documents
+## Architecture and Workflow Diagrams
 
-The `workflow/` directory holds six Mermaid diagrams for Chapter 15:
+Interactive Archify workflow diagrams illustrate Chapter 15's continuous evaluation gate, model migration checklists, live drift detection, automated red-teaming, and human-in-the-loop promotion ratchet. The companion Mermaid diagrams and notes are preserved in `workflow/`.
 
-- The pull-request evaluation merge gate.
-- A prompt regression caught before merge.
-- Model migration replay against a baseline.
-- Telemetry collection and drift detection.
-- Automated red-teaming with paired benign controls and fault injection.
-- The human-review feedback loop from override to frozen case.
+- [01: Day 2 CI/CD Merge Gate Workflow](https://the-write-path-code.github.io/ch15-agentic-cicd/workflow/01_overview_day2_merge_gate.html) — Visualizes the Day 2 loop end-to-end: pull request ingress, the three parallel blocking workflows (code quality, grounding eval-gate, and red-team security), the automated merge policy gate, and continuous deployment handoff.
+- [02: Continuous Grounding Validation Gate](https://the-write-path-code.github.io/ch15-agentic-cicd/workflow/02_eval_gate_pipeline.html) — Details the 60-case Golden Set replay, corpus retrieval with role clearance, multi-dimensional grounding and sufficiency scoring, deterministic policy cascade, and baseline delta checks.
+- [03: Model Migration Verification Checklist](https://the-write-path-code.github.io/ch15-agentic-cicd/workflow/03_model_migration_checklist.html) — Traces the sequential migration checklist from candidate traces through metric delta verification, JSON Schema tool signature compatibility, token and latency budgets, and production-frozen safety sign-off.
+- [04: Live Telemetry & Dual-Signal Drift Detection](https://the-write-path-code.github.io/ch15-agentic-cicd/workflow/04_telemetry_drift_detection.html) — Demonstrates hourly windowed drift detection across optimistic concurrency control (OCC) conflict retry rates and top-5 retrieval similarity bands, emitting alerts to Prometheus/Alertmanager.
+- [05: Automated Red-Team Security Pipeline](https://the-write-path-code.github.io/ch15-agentic-cicd/workflow/05_redteam_security_pipeline.html) — Maps the sequential four-layer security seam (L1 validator, L2 semantic guard, L10 identity scope, L7 context isolator), paired benign controls, simulated scanner fault-injection, and tamper-evident audit logging.
+- [06: HITL Feedback Loop & One-Way Promotion Ratchet](https://the-write-path-code.github.io/ch15-agentic-cicd/workflow/06_hitl_governance_ratchet.html) — Illustrates how operational human overrides create provisional golden cases and adversarial twin probes, governed by a strict one-way ratchet that prevents test softening or demotions.
 
-Read the merge-gate diagram first. It shows the ordering that governs the repository: pull request, offline evaluation, baseline comparison, nonzero exit on violation, then deployment only after the change is allowed to merge.
+Read the merge-gate diagram first (`01_overview_day2_merge_gate.html`). It shows the ordering that governs the repository: pull request, offline evaluation, baseline comparison, nonzero exit on violation, then deployment only after the change is allowed to merge.
 
 ## Safety and Operational Limits
 
