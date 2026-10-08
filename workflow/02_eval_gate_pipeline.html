@@ -4980,6 +4980,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <div class="pulse-dot"></div>
         <h1>Continuous Grounding Eval Gate Workflow</h1>
       </div>
+      <p class="subtitle">Deterministic Golden Benchmark Gate: 60-Case Retrieval Replay, Multi-Dimensional Scoring, Policy Cascade, and Baseline Delta Enforcement</p>
     </div>
 
     <script id="archify-source-evidence-data" type="application/json">{"schemaVersion":1,"verified":true,"repository":{"url":"https://github.com/the-write-path-code/ch15-agentic-cicd","revision":"07034468f973240aa51e81555f60ab376dae5460","shortRevision":"0703446","label":"the-write-path-code/ch15-agentic-cicd","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/tree/07034468f973240aa51e81555f60ab376dae5460"},"referenceCount":7,"nodes":{"pr_trigger":[{"path":"scripts/run_eval.py","line":26,"endLine":52,"label":"load_cases","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/blob/07034468f973240aa51e81555f60ab376dae5460/scripts/run_eval.py#L26-L52"}],"corpus_retrieval":[{"path":"src/day2ops/corpus/retrieval.py","line":15,"endLine":39,"label":"retrieve","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/blob/07034468f973240aa51e81555f60ab376dae5460/src/day2ops/corpus/retrieval.py#L15-L39"}],"grounding_score":[{"path":"src/day2ops/eval/grounding.py","line":15,"endLine":65,"label":"grounding","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/blob/07034468f973240aa51e81555f60ab376dae5460/src/day2ops/eval/grounding.py#L15-L65"}],"policy_eval":[{"path":"src/day2ops/eval/gate.py","line":25,"endLine":55,"label":"classify","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/blob/07034468f973240aa51e81555f60ab376dae5460/src/day2ops/eval/gate.py#L25-L55"}],"baseline_gate":[{"path":"src/day2ops/eval/gate.py","line":56,"endLine":74,"label":"compare","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/blob/07034468f973240aa51e81555f60ab376dae5460/src/day2ops/eval/gate.py#L56-L74"}],"merge_allowed":[{"path":".github/workflows/eval-gate.yml","line":40,"endLine":61,"label":"pass","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/blob/07034468f973240aa51e81555f60ab376dae5460/.github/workflows/eval-gate.yml#L40-L61"}],"merge_blocked":[{"path":"src/day2ops/eval/gate.py","line":60,"endLine":70,"label":"block","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/blob/07034468f973240aa51e81555f60ab376dae5460/src/day2ops/eval/gate.py#L60-L70"}]}}</script>
@@ -5367,37 +5368,49 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
     <div class="cards">
       <div class="card">
         <div class="card-header">
-          <div class="card-dot emerald"></div>
-          <h3>Offline Golden Set Evaluation</h3>
+          <div class="card-dot rose"></div>
+          <h3>The Business Problem: Preventing Customer-Facing Hallucinations</h3>
         </div>
         <ul>
-          <li>Loads committed 60-case golden set covering HR and SEC operational retrieval scenarios</li>
-          <li>Replays active prompt completions with role-based clearance filtering applied</li>
-          <li>Deterministic local execution guarantees reproducible, verifiable evaluation scores</li>
+          <li><strong>Silent Quality Erosion:</strong> Prompt changes and retrieval parameter tweaks frequently degrade domain accuracy without throwing exceptions; the system continues returning fluent, plausible-sounding, but dangerously inaccurate answers</li>
+          <li><strong>Cost of Hallucination:</strong> In enterprise compliance (HR policies, SEC filings), ungrounded answers result in liability exposure, regulatory fines, and broken user trust</li>
+          <li><strong>The Golden Set Defense:</strong> Enforces a locked 60-case benchmark (<code>golden_v1.jsonl</code>) representing realistic user queries and enterprise policies that every pull request must evaluate against</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-dot emerald"></div>
+          <h3>Multi-Dimensional Grounding Metrics</h3>
+        </div>
+        <ul>
+          <li><strong>Retrieval Precision &amp; Recall:</strong> Verifies the agent retrieves authorized, relevant context chunks and filters restricted documents based on user role clearance</li>
+          <li><strong>Claim Grounding (Threshold &ge; 0.90 / 0.98):</strong> Verifies that every factual claim in the response is directly traceable to retrieved source text (strict 0.98 bar for High-Risk queries)</li>
+          <li><strong>Answer Faithfulness (Threshold &ge; 0.90 / 0.95):</strong> Measures whether the generated answer faithfully represents reference truths without ungrounded extrapolations or hallucinations</li>
         </ul>
       </div>
 
       <div class="card">
         <div class="card-header">
           <div class="card-dot amber"></div>
-          <h3>Multi-Dimensional Grounding Scoring</h3>
+          <h3>Deterministic Policy Cascade &amp; Dispositions</h3>
         </div>
         <ul>
-          <li>Evaluates retrieval precision, claim grounding, citations, and answer sufficiency</li>
-          <li>Assigns policy disposition: ANSWER, QUALIFIED_ANSWER, ABSTAIN, BLOCK, or HUMAN_REVIEW</li>
-          <li>Flags low-confidence or ungrounded responses before baseline comparison</li>
+          <li><strong>Fixed-Order Gate Evaluation (<code>apply_gate()</code>):</strong> Evaluates sufficiency first; if evidence is <code>INSUFFICIENT</code>, the gate mandates <code>ABSTAIN</code>; if <code>CONFLICTING</code> on high-risk queries, it halts for <code>HUMAN_REVIEW</code></li>
+          <li><strong>Five Discrete Outcomes:</strong> Every query resolves deterministically to <code>ANSWER</code>, <code>QUALIFIED_ANSWER</code>, <code>ABSTAIN</code>, <code>BLOCK</code>, or <code>HUMAN_REVIEW</code>—removing arbitrary LLM improvisation</li>
+          <li><strong>Fail-Closed High-Risk Protection:</strong> High-risk queries below 0.98 grounding or 0.95 faithfulness are barred from raw delivery, guaranteeing customer safety over blind optimism</li>
         </ul>
       </div>
 
       <div class="card">
         <div class="card-header">
-          <div class="card-dot rose"></div>
-          <h3>Baseline Gate Enforcement</h3>
+          <div class="card-dot cyan"></div>
+          <h3>Baseline Comparison &amp; Release Governance</h3>
         </div>
         <ul>
-          <li>Computes metric deltas against committed baseline in data/baselines/</li>
-          <li>Enforces zero regressions across all production-frozen test cases</li>
-          <li>Blocks PR merge with non-zero exit code if any quality threshold breaches</li>
+          <li><strong>Committed Reference Baselines:</strong> Scores are compared directly against version-controlled <code>baselines/metrics_baseline.json</code>; deltas must remain within configured tolerance bands</li>
+          <li><strong>Zero Regression on Frozen Cases:</strong> Any drop on <code>PRODUCTION-FROZEN</code> cases triggers an automatic non-zero exit code and PR block, preserving hard-won operational fixes</li>
+          <li><strong>Automated PR Diagnostic Reports:</strong> GitHub Actions outputs clear diffs highlighting regressed queries, score drops, and citation mismatches so developers can quickly remediate issues</li>
         </ul>
       </div>
     </div>

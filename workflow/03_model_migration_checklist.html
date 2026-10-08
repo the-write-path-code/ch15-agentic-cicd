@@ -4980,6 +4980,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <div class="pulse-dot"></div>
         <h1>Model Migration Verification Checklist</h1>
       </div>
+      <p class="subtitle">Four-Stage Model Migration Checklist: Metric Deltas, Tool Call Schemas, Token Budgets, and Zero-Regression Frozen Gates</p>
     </div>
 
     <script id="archify-source-evidence-data" type="application/json">{"schemaVersion":1,"verified":true,"repository":{"url":"https://github.com/the-write-path-code/ch15-agentic-cicd","revision":"07034468f973240aa51e81555f60ab376dae5460","shortRevision":"0703446","label":"the-write-path-code/ch15-agentic-cicd","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/tree/07034468f973240aa51e81555f60ab376dae5460"},"referenceCount":7,"nodes":{"cand_traces":[{"path":"scripts/run_eval.py","line":26,"endLine":52,"label":"load_cases","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/blob/07034468f973240aa51e81555f60ab376dae5460/scripts/run_eval.py#L26-L52"}],"metric_deltas":[{"path":"src/day2ops/eval/gate.py","line":25,"endLine":55,"label":"deltas","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/blob/07034468f973240aa51e81555f60ab376dae5460/src/day2ops/eval/gate.py#L25-L55"}],"tool_signatures":[{"path":"src/day2ops/migration/signature_compat.py","line":1,"endLine":45,"label":"signatures","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/blob/07034468f973240aa51e81555f60ab376dae5460/src/day2ops/migration/signature_compat.py#L1-L45"}],"token_budgets":[{"path":"src/day2ops/migration/token_report.py","line":1,"endLine":45,"label":"budgets","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/blob/07034468f973240aa51e81555f60ab376dae5460/src/day2ops/migration/token_report.py#L1-L45"}],"frozen_cases":[{"path":"src/day2ops/eval/gate.py","line":56,"endLine":74,"label":"frozen","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/blob/07034468f973240aa51e81555f60ab376dae5460/src/day2ops/eval/gate.py#L56-L74"}],"promote_pass":[{"path":".github/workflows/eval-gate.yml","line":40,"endLine":61,"label":"promote","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/blob/07034468f973240aa51e81555f60ab376dae5460/.github/workflows/eval-gate.yml#L40-L61"}],"blocked_fail":[{"path":"src/day2ops/eval/gate.py","line":60,"endLine":70,"label":"blocked","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/blob/07034468f973240aa51e81555f60ab376dae5460/src/day2ops/eval/gate.py#L60-L70"}]}}</script>
@@ -5361,37 +5362,49 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
     <div class="cards">
       <div class="card">
         <div class="card-header">
-          <div class="card-dot emerald"></div>
-          <h3>Offline Replay Verification</h3>
+          <div class="card-dot rose"></div>
+          <h3>The Business Problem: The 'Smarter Model' Paradox</h3>
         </div>
         <ul>
-          <li>Candidate model outputs replayed against the committed 60-case golden set</li>
-          <li>Deterministic evaluation run isolates model behavioral differences from environmental drift</li>
-          <li>Metric delta verification enforces strict tolerance bands on precision and faithfulness</li>
+          <li><strong>Silent Tool &amp; Format Breaks:</strong> Upgrading to a newer, larger, or cheaper LLM often improves generic reasoning while silently breaking downstream JSON parsers, tool signatures, and safety instructions</li>
+          <li><strong>Verbosity &amp; Token Surges:</strong> New model variants often produce more verbose explanations, unexpectedly tripling token consumption and cloud inference bills</li>
+          <li><strong>Why Public Benchmarks Fail:</strong> Vendor benchmarks (MMLU, HumanEval) do not reflect your proprietary policies; migration requires deterministic testing against your own golden workload</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-dot emerald"></div>
+          <h3>Stages 1 &amp; 2: Metric Deltas &amp; Tool Contracts</h3>
+        </div>
+        <ul>
+          <li><strong>Metric Tolerance Bands:</strong> Evaluates whether precision and faithfulness shifts stay within pre-approved thresholds rather than causing unexpected domain degradation</li>
+          <li><strong>Strict Tool Call Schemas:</strong> Validates that candidate model tool invocations adhere 100% to declared JSON schemas (preventing downstream parameter syntax errors)</li>
+          <li><strong>Offline Replay Determinism:</strong> Tests candidate model traces against the golden set offline without flaky real-time API variability</li>
         </ul>
       </div>
 
       <div class="card">
         <div class="card-header">
           <div class="card-dot amber"></div>
-          <h3>Contract and Operational Ceilings</h3>
+          <h3>Stage 3: Token Budgets &amp; Latency Ceilings</h3>
         </div>
         <ul>
-          <li>Tool call JSON outputs must strictly adhere to declared parameters and argument types</li>
-          <li>Token consumption measured per-case and globally against operational cost caps</li>
-          <li>P95 latency degradation limits protect downstream SLA commitments during canary</li>
+          <li><strong>Per-Case Token Caps (<code>token_report.py</code>):</strong> Monitors input, output, and total token usage per case to ensure migration does not cause cloud billing runaway</li>
+          <li><strong>Operational Latency Limits:</strong> Confirms that candidate model response latency meets production SLAs before traffic shifts</li>
+          <li><strong>Predictable Unit Economics:</strong> Provides engineering and product leaders with deterministic cost projections before authorizing a production switch</li>
         </ul>
       </div>
 
       <div class="card">
         <div class="card-header">
-          <div class="card-dot rose"></div>
-          <h3>Frozen Case Regression Invariant</h3>
+          <div class="card-dot cyan"></div>
+          <h3>Stage 4: Frozen Case Invariant &amp; Canary Rollout</h3>
         </div>
         <ul>
-          <li>Production-frozen security and grounding test cases require 100% pass rate</li>
-          <li>Any regression immediately blocks promotion and generates tamper-evident audit logs</li>
-          <li>Approved migrations update committed baselines and sign off canary rollout to production</li>
+          <li><strong>Zero Regression on Frozen Cases:</strong> Critical ground truth and safety test cases marked <code>PRODUCTION-FROZEN</code> permit zero regressions; any drop aborts the migration</li>
+          <li><strong>Canary Rollout Sign-Off:</strong> Only models passing all 4 checklist stages receive sign-off for canary traffic splitting (e.g. 5% canary &rarr; 100% production)</li>
+          <li><strong>Baseline Update Governance:</strong> Once verified in production, baselines are updated via governed audit logs, ratcheting quality upward</li>
         </ul>
       </div>
     </div>

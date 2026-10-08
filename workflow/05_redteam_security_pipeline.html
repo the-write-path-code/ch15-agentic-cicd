@@ -4980,6 +4980,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <div class="pulse-dot"></div>
         <h1>Automated Red-Team CI Pipeline</h1>
       </div>
+      <p class="subtitle">Automated Red-Teaming in CI: 4-Layer Security Seam, Paired Benign Controls, and Fail-Closed Fault-Injection Proof</p>
     </div>
 
     <script id="archify-source-evidence-data" type="application/json">{"schemaVersion":1,"verified":true,"repository":{"url":"https://github.com/the-write-path-code/ch15-agentic-cicd","revision":"07034468f973240aa51e81555f60ab376dae5460","shortRevision":"0703446","label":"the-write-path-code/ch15-agentic-cicd","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/tree/07034468f973240aa51e81555f60ab376dae5460"},"referenceCount":7,"nodes":{"suite_harness":[{"path":"scripts/run_redteam.py","line":15,"endLine":60,"label":"redteam_suite","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/blob/07034468f973240aa51e81555f60ab376dae5460/scripts/run_redteam.py#L15-L60"}],"l1_input":[{"path":"src/day2ops/redteam/layers.py","line":15,"endLine":55,"label":"input_check","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/blob/07034468f973240aa51e81555f60ab376dae5460/src/day2ops/redteam/layers.py#L15-L55"}],"l2_semantic":[{"path":"src/day2ops/redteam/layers.py","line":60,"endLine":110,"label":"semantic_check","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/blob/07034468f973240aa51e81555f60ab376dae5460/src/day2ops/redteam/layers.py#L60-L110"}],"l10_identity":[{"path":"src/day2ops/redteam/layers.py","line":115,"endLine":180,"label":"identity_check","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/blob/07034468f973240aa51e81555f60ab376dae5460/src/day2ops/redteam/layers.py#L115-L180"}],"l7_isolator":[{"path":"src/day2ops/redteam/layers.py","line":185,"endLine":250,"label":"context_check","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/blob/07034468f973240aa51e81555f60ab376dae5460/src/day2ops/redteam/layers.py#L185-L250"}],"verify_gates":[{"path":"src/day2ops/redteam/pipeline.py","line":25,"endLine":75,"label":"run_pipeline","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/blob/07034468f973240aa51e81555f60ab376dae5460/src/day2ops/redteam/pipeline.py#L25-L75"}],"audit_logger":[{"path":"scripts/run_redteam.py","line":120,"endLine":175,"label":"write_audit","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/blob/07034468f973240aa51e81555f60ab376dae5460/scripts/run_redteam.py#L120-L175"}]}}</script>
@@ -5367,39 +5368,50 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
     <div class="cards">
       <div class="card">
         <div class="card-header">
-          <div class="card-dot emerald"></div>
-          <h3>Automated Red-Team CI Suite</h3>
+          <div class="card-dot rose"></div>
+          <h3>The Business Problem: Preventing Jailbreaks &amp; Data Leaks</h3>
         </div>
         <ul>
-          <li>Executes adversarial attack probes, benign control pairs, and fail-closed fault injections</li>
-          <li>Validates model responses across prompt injection, jailbreaking, and role escalation</li>
-          <li>Deterministic local runner scripts/run_redteam.py runs as part of pull request gating</li>
+          <li><strong>Enterprise Threat Surface:</strong> Agentic systems connect LLMs to private data and backend tools; prompt injections, indirect RAG poisoning, and role escalation can cause data exfiltration or unauthorized actions</li>
+          <li><strong>Continuous vs. Annual Audits:</strong> Security cannot be an annual manual penetration test; every prompt edit or model bump must be automatically tested against known attack vectors before merging</li>
+          <li><strong>The False-Positive Trap:</strong> Blocking attacks is trivial if you block everything; an enterprise security suite must prove that legitimate business requests pass cleanly without disruption</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-dot emerald"></div>
+          <h3>The 4-Layer Defense-in-Depth Seam</h3>
+        </div>
+        <ul>
+          <li><strong>Layer 1 (Input Validator):</strong> Regex filtering and payload structure checks reject oversized inputs and known exploit patterns before LLM execution</li>
+          <li><strong>Layer 2 (Semantic Guard):</strong> Analyzes semantic intent to intercept indirect jailbreak phrasing, adversarial obfuscation, and prompt extraction attempts</li>
+          <li><strong>Layer 10 (Identity &amp; Scope):</strong> Enforces role-based clearance, ensuring an unprivileged user cannot invoke sensitive internal operations via prompt manipulation</li>
+          <li><strong>Layer 7 (Context Isolator):</strong> Encapsulates retrieved external context inside XML boundary envelopes to prevent untrusted data from hijacking system instructions</li>
         </ul>
       </div>
 
       <div class="card">
         <div class="card-header">
           <div class="card-dot amber"></div>
-          <h3>Sequential 4-Layer Security Seam</h3>
+          <h3>Three Mandatory Merge Verification Gates</h3>
         </div>
         <ul>
-          <li>L1 Input Guard validates length, regex patterns, and payload schema structure</li>
-          <li>L2 Semantic Guard inspects escalation intent, jailbreak phrases, and policy markers</li>
-          <li>L10 Identity Scope enforces user clearance boundaries and permitted tool permissions</li>
-          <li>L7 Context Guard isolates retrieved external knowledge inside XML defensive envelopes</li>
+          <li><strong>Gate 1 (39 Attack Vectors Blocked):</strong> 100% of the 39 adversarial test probes must be stopped at the designated security layer with precise diagnostic reasons</li>
+          <li><strong>Gate 2 (39 Paired Controls Clean):</strong> 100% of the 39 paired benign control prompts must pass through cleanly, proving zero false-positive business disruption</li>
+          <li><strong>Gate 3 (Fail-Closed Fault Proof):</strong> Layer 7 fault injection deliberately crashes the security scanner; the pipeline must fail-closed (aborting the request) rather than fail-open</li>
         </ul>
       </div>
 
       <div class="card">
         <div class="card-header">
-          <div class="card-dot rose"></div>
-          <h3>Mandatory Verification &amp; Audit</h3>
+          <div class="card-dot cyan"></div>
+          <h3>Compliance Auditability &amp; CI Release Egress</h3>
         </div>
         <ul>
-          <li>Gate 1 verifies 100% of adversarial attack vectors are intercepted and blocked</li>
-          <li>Gate 2 verifies legitimate benign control requests cleanly pass with zero false positives</li>
-          <li>Gate 3 proves fail-closed hard-block behavior when scanner fault-injection is triggered</li>
-          <li>Tamper-evident audit log reports/redteam_audit.jsonl records every verification result</li>
+          <li><strong>Zero-Tolerance Merge Rule:</strong> Any missed attack vector or false-positive block fails CI with a non-zero exit code, strictly blocking the PR from merging to <code>main</code></li>
+          <li><strong>Tamper-Evident Audit Trail:</strong> <code>reports/redteam_audit.jsonl</code> records cryptographic timestamps, layer decisions, and fault proofs for compliance audits (SOC2, ISO 27001)</li>
+          <li><strong>Fast Offline Execution:</strong> The full red-team suite executes deterministically in seconds in GitHub Actions without external API dependencies or latency overhead</li>
         </ul>
       </div>
     </div>

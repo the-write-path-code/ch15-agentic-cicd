@@ -4980,6 +4980,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <div class="pulse-dot"></div>
         <h1>Live Telemetry &amp; Dual-Signal Drift Detection</h1>
       </div>
+      <p class="subtitle">Live Production Observability: Dual-Signal Statistical Drift Detection Across Concurrency Contention and Retrieval Quality</p>
     </div>
 
     <script id="archify-source-evidence-data" type="application/json">{"schemaVersion":1,"verified":true,"repository":{"url":"https://github.com/the-write-path-code/ch15-agentic-cicd","revision":"07034468f973240aa51e81555f60ab376dae5460","shortRevision":"0703446","label":"the-write-path-code/ch15-agentic-cicd","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/tree/07034468f973240aa51e81555f60ab376dae5460"},"referenceCount":7,"nodes":{"live_traffic":[{"path":"src/day2ops/telemetry/store.py","line":15,"endLine":45,"label":"store","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/blob/07034468f973240aa51e81555f60ab376dae5460/src/day2ops/telemetry/store.py#L15-L45"}],"hourly_windows":[{"path":"scripts/detect_drift.py","line":34,"endLine":52,"label":"windows","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/blob/07034468f973240aa51e81555f60ab376dae5460/scripts/detect_drift.py#L34-L52"}],"occ_engine":[{"path":"src/day2ops/telemetry/drift.py","line":20,"endLine":55,"label":"occ","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/blob/07034468f973240aa51e81555f60ab376dae5460/src/day2ops/telemetry/drift.py#L20-L55"}],"sim_engine":[{"path":"src/day2ops/telemetry/drift.py","line":56,"endLine":80,"label":"similarity","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/blob/07034468f973240aa51e81555f60ab376dae5460/src/day2ops/telemetry/drift.py#L56-L80"}],"drift_eval":[{"path":"scripts/detect_drift.py","line":55,"endLine":80,"label":"detect","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/blob/07034468f973240aa51e81555f60ab376dae5460/scripts/detect_drift.py#L55-L80"}],"steady_state":[{"path":"scripts/detect_drift.py","line":70,"endLine":80,"label":"clean","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/blob/07034468f973240aa51e81555f60ab376dae5460/scripts/detect_drift.py#L70-L80"}],"drift_alert":[{"path":"src/day2ops/telemetry/prometheus_export.py","line":15,"endLine":41,"label":"alert","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/blob/07034468f973240aa51e81555f60ab376dae5460/src/day2ops/telemetry/prometheus_export.py#L15-L41"}]}}</script>
@@ -5371,37 +5372,49 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
     <div class="cards">
       <div class="card">
         <div class="card-header">
-          <div class="card-dot emerald"></div>
-          <h3>Continuous Telemetry Streaming</h3>
+          <div class="card-dot rose"></div>
+          <h3>The Business Problem: Detecting Silent Production Drift</h3>
         </div>
         <ul>
-          <li>Live agent production traffic ingested into append-only JSONL files or opik tracing</li>
-          <li>Records grouped into rolling hourly windows for anomaly detection and trend analysis</li>
-          <li>Dual metrics computed per window: concurrency conflicts and semantic similarity</li>
+          <li><strong>Post-Deploy Blindspots:</strong> Passing CI proves the system was safe on committed test cases; in production, evolving user query distributions, corpus updates, and concurrent traffic create silent operational drift</li>
+          <li><strong>Customer Impact:</strong> Without proactive telemetry, teams only discover degradation when users file complaints about incorrect answers, stale policies, or unresponsive retries</li>
+          <li><strong>Proactive Telemetry:</strong> Ingests live production runtime traces to detect systemic divergence hours or days before it impacts customer SLAs or brand reputation</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-dot emerald"></div>
+          <h3>Signal 1: Concurrency Contention &amp; OCC Retry Engine</h3>
+        </div>
+        <ul>
+          <li><strong>Optimistic Concurrency Control (OCC):</strong> Stateful agents write to shared state under version checks; high concurrent writes cause transaction rollbacks and retries</li>
+          <li><strong>Operational Ceiling:</strong> Tracks hourly retry rates against baseline ceilings; a sudden spike signals locking contention, worker bottlenecks, or race conditions</li>
+          <li><strong>Infrastructure Protection:</strong> Alerts engineering before runaway retry loops exhaust database connection pools or trigger cascading 504 timeouts</li>
         </ul>
       </div>
 
       <div class="card">
         <div class="card-header">
           <div class="card-dot amber"></div>
-          <h3>Dual Statistical Drift Detectors</h3>
+          <h3>Signal 2: Retrieval Semantic Similarity Floor</h3>
         </div>
         <ul>
-          <li>OCC Concurrency Engine tracks retry count against baseline operational ceilings</li>
-          <li>Retrieval Similarity Engine enforces 0.780 cosine similarity floor across top-5 docs</li>
-          <li>Statistical outlier detection flags distribution drift before quality degradation occurs</li>
+          <li><strong>Semantic Quality Metric:</strong> Tracks the mean cosine similarity across top-5 retrieved document chunks for all live production queries</li>
+          <li><strong>0.780 Band Floor:</strong> A drop below the 0.780 threshold indicates that users are asking questions outside the existing corpus coverage</li>
+          <li><strong>Corpus Gap Remediation:</strong> Prompts knowledge management teams to ingest updated policy documentation before agents resort to speculative extrapolation</li>
         </ul>
       </div>
 
       <div class="card">
         <div class="card-header">
-          <div class="card-dot rose"></div>
-          <h3>Operational Egress &amp; Incident Response</h3>
+          <div class="card-dot cyan"></div>
+          <h3>Operational Egress &amp; Incident Routing</h3>
         </div>
         <ul>
-          <li>Normal runs exit with status code 0 and emit metrics to Prometheus exporters</li>
-          <li>Drifted windows exit non-zero and trigger Alertmanager high-priority routing</li>
-          <li>Full trace window context is exported for root-cause triage and golden set curation</li>
+          <li><strong>Deterministic Execution (<code>detect_drift.py</code>):</strong> Periodically evaluates rolling hourly windows; clean runs exit 0 while drifted windows exit non-zero</li>
+          <li><strong>Prometheus &amp; Alertmanager:</strong> Emits metrics to Prometheus and routes actionable alerts with the exact window timestamp and offending signal</li>
+          <li><strong>Feedback Loop Integration:</strong> Anomalous production traces are automatically flagged for human review and golden benchmark expansion</li>
         </ul>
       </div>
     </div>

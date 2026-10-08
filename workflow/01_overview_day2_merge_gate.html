@@ -4980,6 +4980,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <div class="pulse-dot"></div>
         <h1>Day 2 CI/CD Merge Gate Workflow</h1>
       </div>
+      <p class="subtitle">Tri-Gate AI Defense Architecture: Parallel Code Quality, Grounding Evaluation, and Red-Team Security Merge Barriers</p>
     </div>
 
     <script id="archify-source-evidence-data" type="application/json">{"schemaVersion":1,"verified":true,"repository":{"url":"https://github.com/the-write-path-code/ch15-agentic-cicd","revision":"07034468f973240aa51e81555f60ab376dae5460","shortRevision":"0703446","label":"the-write-path-code/ch15-agentic-cicd","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/tree/07034468f973240aa51e81555f60ab376dae5460"},"referenceCount":7,"nodes":{"change_ingress":[{"path":".github/workflows/ci.yml","line":1,"endLine":29,"label":"ci.yml","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/blob/07034468f973240aa51e81555f60ab376dae5460/.github/workflows/ci.yml#L1-L29"}],"ci_gate":[{"path":".github/workflows/ci.yml","line":12,"endLine":29,"label":"CI checks","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/blob/07034468f973240aa51e81555f60ab376dae5460/.github/workflows/ci.yml#L12-L29"}],"eval_gate":[{"path":"scripts/run_eval.py","line":26,"endLine":98,"label":"run_eval.py","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/blob/07034468f973240aa51e81555f60ab376dae5460/scripts/run_eval.py#L26-L98"}],"redteam_gate":[{"path":"scripts/run_redteam.py","line":1,"endLine":100,"label":"run_redteam.py","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/blob/07034468f973240aa51e81555f60ab376dae5460/scripts/run_redteam.py#L1-L100"}],"merge_policy":[{"path":"src/day2ops/eval/gate.py","line":25,"endLine":74,"label":"apply_gate","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/blob/07034468f973240aa51e81555f60ab376dae5460/src/day2ops/eval/gate.py#L25-L74"}],"merged_pass":[{"path":".github/workflows/eval-gate.yml","line":1,"endLine":61,"label":"eval-gate.yml","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/blob/07034468f973240aa51e81555f60ab376dae5460/.github/workflows/eval-gate.yml#L1-L61"}],"merge_blocked":[{"path":"src/day2ops/eval/gate.py","line":60,"endLine":69,"label":"grounding_block","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/blob/07034468f973240aa51e81555f60ab376dae5460/src/day2ops/eval/gate.py#L60-L69"}]}}</script>
@@ -5377,37 +5378,49 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
     <div class="cards">
       <div class="card">
         <div class="card-header">
-          <div class="card-dot emerald"></div>
-          <h3>Three Independent CI Merge Gates</h3>
+          <div class="card-dot rose"></div>
+          <h3>The Business Imperative: Stopping Silent AI Regressions</h3>
         </div>
         <ul>
-          <li>Gate 1: Code Quality enforces strict linting, mypy static typing, and fast unit tests</li>
-          <li>Gate 2: Grounding Eval-Gate replays the 60-case golden set and checks metric deltas</li>
-          <li>Gate 3: Red-Team Suite executes adversarial attack probes and proves fail-closed behavior</li>
+          <li><strong>Traditional CI is Blind:</strong> Prompt edits, model version bumps, or retrieval adjustments rarely throw runtime exceptions; an agent returns HTTP 200 and passes standard unit tests while producing hallucinated policy guidance or leaking internal data</li>
+          <li><strong>Production Risk Exposure:</strong> Undetected regressions directly risk customer trust, enterprise compliance violations, and runaway inference costs from verbose prompt drift</li>
+          <li><strong>Deterministic Barrier:</strong> Continuous Delivery for AI requires automated, objective gates that treat semantic hallucinations and security bypasses as hard build-stopping failures</li>
         </ul>
       </div>
 
       <div class="card">
         <div class="card-header">
-          <div class="card-dot rose"></div>
-          <h3>Automated Policy Enforcement</h3>
+          <div class="card-dot emerald"></div>
+          <h3>The Tri-Gate Architecture: Three Parallel Lines of Defense</h3>
         </div>
         <ul>
-          <li>Any gate failure immediately blocks the pull request and returns diagnostic reports</li>
-          <li>Zero regressions are permitted on any production-frozen golden test case</li>
-          <li>Baselines remain immutable unless explicitly updated through approved governance</li>
+          <li><strong>Gate 1 (Code Quality):</strong> Runs Ruff linting, Mypy strict static typing across agent schemas, and Pytest unit suites to maintain software engineering hygiene</li>
+          <li><strong>Gate 2 (Grounding Eval-Gate):</strong> Deterministically replays the 60-case golden benchmark (<code>golden_v1.jsonl</code>), scoring retrieval precision, claim grounding, and faithfulness deltas against immutable baselines</li>
+          <li><strong>Gate 3 (Red-Team Security Gate):</strong> Executes 39 adversarial attack probes paired with 39 benign control prompts, verifying fail-closed isolation across Layers 1, 2, 10, and 7 before changes can merge</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-dot amber"></div>
+          <h3>Release Policy &amp; Zero-Tolerance Governance</h3>
+        </div>
+        <ul>
+          <li><strong>Zero Regressions on Frozen Cases:</strong> Any drop in grounding or faithfulness on <code>PRODUCTION-FROZEN</code> golden cases triggers an automatic non-zero exit (<code>apply_gate()</code>), strictly blocking the pull request</li>
+          <li><strong>Risk-Tiered Decision Cascade:</strong> High-risk queries with insufficient or conflicting evidence automatically mandate human review holds or abstention rather than ungrounded speculative responses</li>
+          <li><strong>Immutable Release Baselines:</strong> Metric baselines (<code>metrics_baseline.json</code>) are committed to version control; developers cannot arbitrarily lower standards to push code without reviewed governance sign-off</li>
         </ul>
       </div>
 
       <div class="card">
         <div class="card-header">
           <div class="card-dot cyan"></div>
-          <h3>Continuous Deployment Handoff</h3>
+          <h3>Operational Velocity &amp; Continuous Deployment Handoff</h3>
         </div>
         <ul>
-          <li>Only pull requests where all three gates pass receive exit code 0 and merge to main</li>
-          <li>Merged changes automatically trigger continuous deployment pipelines to production</li>
-          <li>Tamper-evident evaluation reports and summaries are retained with the workflow run</li>
+          <li><strong>Sub-2-Minute Deterministic Feedback:</strong> The default evaluation stack runs completely offline in GitHub Actions without expensive LLM API bills, token quotas, or network latency flakiness</li>
+          <li><strong>Automated CD Pipeline Handoff:</strong> Only pull requests satisfying all three gates receive exit code 0 to merge into <code>main</code>, immediately handing off to the automated Continuous Deployment (CD) pipeline</li>
+          <li><strong>Tamper-Evident Audit Artifacts:</strong> Every CI execution records structured JSONL evaluation reports and red-team audits, providing complete traceability for release reviews and compliance auditing</li>
         </ul>
       </div>
     </div>
