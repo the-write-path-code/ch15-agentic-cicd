@@ -4980,6 +4980,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <div class="pulse-dot"></div>
         <h1>HITL Feedback Loop &amp; One-Way Promotion Ratchet</h1>
       </div>
+      <p class="subtitle">Human-in-the-Loop Governance: Operational Override Ingestion, Adversarial Twin Synthesis, and One-Way Production Ratchet</p>
     </div>
 
     <script id="archify-source-evidence-data" type="application/json">{"schemaVersion":1,"verified":true,"repository":{"url":"https://github.com/the-write-path-code/ch15-agentic-cicd","revision":"07034468f973240aa51e81555f60ab376dae5460","shortRevision":"0703446","label":"the-write-path-code/ch15-agentic-cicd","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/tree/07034468f973240aa51e81555f60ab376dae5460"},"referenceCount":7,"nodes":{"reviewer_stream":[{"path":"scripts/capture_overrides.py","line":10,"endLine":35,"label":"capture","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/blob/07034468f973240aa51e81555f60ab376dae5460/scripts/capture_overrides.py#L10-L35"}],"ignore_escalate":[{"path":"src/day2ops/hitl/capture.py","line":20,"endLine":55,"label":"ignore","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/blob/07034468f973240aa51e81555f60ab376dae5460/src/day2ops/hitl/capture.py#L20-L55"}],"assert_ground":[{"path":"src/day2ops/hitl/capture.py","line":56,"endLine":85,"label":"grounding","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/blob/07034468f973240aa51e81555f60ab376dae5460/src/day2ops/hitl/capture.py#L56-L85"}],"assert_security":[{"path":"src/day2ops/hitl/capture.py","line":86,"endLine":115,"label":"twin","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/blob/07034468f973240aa51e81555f60ab376dae5460/src/day2ops/hitl/capture.py#L86-L115"}],"promote_ratchet":[{"path":"scripts/promote_cases.py","line":15,"endLine":45,"label":"promote","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/blob/07034468f973240aa51e81555f60ab376dae5460/scripts/promote_cases.py#L15-L45"}],"stay_provisional":[{"path":"src/day2ops/hitl/promote.py","line":20,"endLine":40,"label":"provisional","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/blob/07034468f973240aa51e81555f60ab376dae5460/src/day2ops/hitl/promote.py#L20-L40"}],"production_frozen":[{"path":"src/day2ops/hitl/promote.py","line":41,"endLine":60,"label":"freeze","href":"https://github.com/the-write-path-code/ch15-agentic-cicd/blob/07034468f973240aa51e81555f60ab376dae5460/src/day2ops/hitl/promote.py#L41-L60"}]}}</script>
@@ -5372,37 +5373,49 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
     <div class="cards">
       <div class="card">
         <div class="card-header">
-          <div class="card-dot emerald"></div>
-          <h3>Human Reviewer Override Stream</h3>
+          <div class="card-dot rose"></div>
+          <h3>The Business Problem: Preventing Recurring Production Mistakes</h3>
         </div>
         <ul>
-          <li>Captures production reviewer overrides and correction decisions from data/hitl/</li>
-          <li>Extracts rationale, query payload, corrected output, and required ground-truth evidence</li>
-          <li>Triages overrides into audit-only events, grounding cases, or adversarial security twins</li>
+          <li><strong>The Tribal Knowledge Leak:</strong> When humans override an agent in production, corrections are easily lost unless converted into permanent automated regression barriers</li>
+          <li><strong>Fragile Bug Fixes:</strong> Informal prompt adjustments often fix one edge case while quietly breaking three others weeks later</li>
+          <li><strong>The Continuous Learning Flywheel:</strong> A structured HITL loop ensures operational human corrections permanently strengthen the CI/CD merge gate over time</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-dot emerald"></div>
+          <h3>Step 1: Override Ingestion &amp; Case Generation</h3>
+        </div>
+        <ul>
+          <li><strong>Reviewer Stream (<code>capture_overrides.py</code>):</strong> Ingests human reviewer correction records from production triage queues (<code>data/hitl/</code>)</li>
+          <li><strong>Triaged Dispositions:</strong> Generates candidate <code>PROVISIONAL</code> golden cases for grounding, or synthesizes paired <strong>Adversarial Twins</strong> for security blocks</li>
+          <li><strong>Anti-Duplication Filter:</strong> Skips queries already represented in the golden set to avoid benchmark bloating with redundant test cases</li>
         </ul>
       </div>
 
       <div class="card">
         <div class="card-header">
           <div class="card-dot amber"></div>
-          <h3>Provisional Case Synthesis &amp; Twins</h3>
+          <h3>Step 2: Provisional Case Staging &amp; Incubation</h3>
         </div>
         <ul>
-          <li>Generates candidate PROVISIONAL test fixtures added to the golden set repository</li>
-          <li>Security overrides automatically synthesize an Adversarial Twin pairing for boundary testing</li>
-          <li>Tracks case metrics in PR runs non-blockingly while gathering additional validation evidence</li>
+          <li><strong>Non-Blocking Metric Tracking:</strong> <code>PROVISIONAL</code> cases execute in pull request CI without blocking merges, gathering multi-run performance evidence</li>
+          <li><strong>Mandatory Human Evidence:</strong> A case cannot promote on model confidence alone; explicit human audit verification in <code>audit_log.jsonl</code> is required</li>
+          <li><strong>Safe Incubation:</strong> Protects developer velocity by ensuring noisy edge cases do not block pull requests until vetted by domain experts</li>
         </ul>
       </div>
 
       <div class="card">
         <div class="card-header">
-          <div class="card-dot rose"></div>
-          <h3>One-Way Promotion Ratchet</h3>
+          <div class="card-dot cyan"></div>
+          <h3>Step 3: The One-Way Promotion Ratchet</h3>
         </div>
         <ul>
-          <li>Confirmed test cases with signed-off ground truth promote to PRODUCTION-FROZEN status</li>
-          <li>One-way ratchet invariant strictly forbids case demotion or removal from the suite</li>
-          <li>Any future regression against a frozen case permanently blocks CI merge to main</li>
+          <li><strong>Promotion to <code>PRODUCTION-FROZEN</code> (<code>promote_cases.py</code>):</strong> Verified cases promote to frozen status, becoming permanent, non-negotiable CI merge gates</li>
+          <li><strong>One-Way Ratchet Invariant:</strong> Demotions are strictly prohibited by code; developers cannot unfreeze or delete test cases to force a failing PR to pass</li>
+          <li><strong>Compounding System Quality:</strong> Every human correction permanently raises the enterprise safety bar, guaranteeing the system never repeats a known historical mistake</li>
         </ul>
       </div>
     </div>
